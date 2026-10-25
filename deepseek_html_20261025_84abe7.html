@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#1f7a4d">
+<title>乡村体育教师工作台</title>
+<style>
+  :root{--green:#1f7a4d;--green-dark:#155c39;--bg:#f4f7f5;--line:#dfe8e2;--muted:#60736a;--warn:#b25b1b;--danger:#b23b3b}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:#1d2a24;line-height:1.55;font-size:15px}
+  header{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px 14px;background:linear-gradient(135deg,#1f7a4d,#2f9b68);color:#fff;position:sticky;top:0;z-index:20}
+  header h1{margin:0;font-size:17px;font-weight:700}
+  header .small{color:#dff0e6;font-size:11px}
+  nav{display:flex;gap:5px;flex-wrap:wrap;padding:7px 10px;background:#fff;position:sticky;top:56px;z-index:19;border-bottom:1px solid var(--line);overflow-x:auto}
+  nav button{background:#e7efe9;color:#1f5a3d;padding:6px 10px;font-size:12px;white-space:nowrap;flex:0 0 auto}
+  nav button.active{background:var(--green);color:#fff}
+  main{max-width:1120px;margin:0 auto;padding:12px 10px 30px}
+  .card{background:#fff;border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(28,70,48,.06)}
+  h2{font-size:16px;margin:0 0 8px}
+  h3{font-size:14px;margin:10px 0 6px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+  .stat{background:#f3f8f5;border:1px solid var(--line);border-radius:9px;padding:8px}
+  .stat strong{font-size:19px;color:var(--green-dark)}
+  label{display:block;font-size:12px;color:#456;margin:6px 0 3px}
+  input,select,textarea{width:100%;padding:8px;border:1px solid #cfd8d2;border-radius:8px;font:inherit;background:#fff;font-size:14px}
+  textarea{resize:vertical}
+  button{cursor:pointer;border:0;border-radius:8px;padding:8px 11px;background:var(--green);color:#fff;font:inherit;font-size:13px}
+  button:active{filter:brightness(.9)}
+  button.secondary{background:#e7efe9;color:#1f5a3d}
+  button.danger{background:var(--danger)}
+  button.warn{background:var(--warn)}
+  .actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px;align-items:center}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  th,td{border-bottom:1px solid #e2e8e4;padding:5px 4px;text-align:left;vertical-align:top;min-width:52px}
+  th{background:#f7faf8;color:#456;font-weight:600;position:sticky;top:0}
+  pre{white-space:pre-wrap;background:#f7faf8;border:1px solid #e0e8e3;padding:9px;border-radius:8px;font-size:12px;line-height:1.55;overflow-x:auto}
+  .small{font-size:11px;color:var(--muted)}
+  .tag{display:inline-block;background:#e7efe9;color:#1f5a3d;border-radius:20px;padding:1px 7px;font-size:11px;margin:1px 2px}
+  .tag.warn{background:#fdf0e4;color:var(--warn)}
+  .check{display:flex;align-items:flex-start;gap:7px;margin:5px 0;font-size:13px}
+  .check input{width:auto;margin-top:3px;min-width:16px;min-height:16px}
+  details{margin:6px 0;border:1px solid var(--line);border-radius:8px;padding:7px}
+  summary{cursor:pointer;font-weight:600;font-size:13px}
+  ul{margin:5px 0;padding-left:18px;font-size:13px}
+  .reminder{background:#fff8e8;border:1px solid #f0d9a8;border-radius:9px;padding:8px 10px;margin-bottom:10px;font-size:13px}
+  .reminder strong{color:var(--warn)}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1d2a24;color:#fff;padding:9px 16px;border-radius:22px;font-size:13px;z-index:99;opacity:0;transition:opacity .2s;pointer-events:none;max-width:88%}
+  .toast.show{opacity:1}
+  .filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+  .filter-bar input,.filter-bar select{width:auto;flex:1 1 120px;font-size:12px;padding:6px}
+  .obs-item{border:1px solid var(--line);border-radius:9px;padding:9px;margin:8px 0;background:#fbfdfc}
+  .obs-item h4{margin:0 0 4px;font-size:14px}
+  .obs-item .meta{font-size:11px;color:var(--muted);margin-bottom:4px}
+  .obs-item .adapt{background:#f3f8f5;border-left:3px solid var(--green);padding:5px 8px;font-size:12px;border-radius:4px;margin:6px 0}
+  .pill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:20px;background:#eee;color:#444}
+  .pill.national{background:#e3f0ff;color:#1a5fb4}
+  .pill.province{background:#e9f7ec;color:#1f7a4d}
+  .pill.rural{background:#fdf0e4;color:#b25b1b}
+  .pill.cross{background:#f3e8ff;color:#6b3fa0}
+  .empty{color:var(--muted);font-size:13px;padding:8px 0}
+  .inline-btn{background:none;border:0;color:var(--green);padding:2px 4px;font-size:12px;text-decoration:underline;cursor:pointer}
+  .readme h3{border-left:3px solid var(--green);padding-left:7px}
+  .readme p,.readme li{font-size:13px}
+  .readme code{background:#eef4f0;padding:1px 5px;border-radius:4px;font-size:12px}
+  @media print{
+    header,nav,.no-print,.toast{display:none!important}
+    body{background:#fff;font-size:12px}
+    main{max-width:none;padding:0}
+    .card{box-shadow:none;border:0;padding:0}
+    pre{border:0;font-size:11px}
+    .reminder{display:none}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div><h1>乡村体育教师工作台</h1><div class="small" id="versionLine">v2.0 · 离线可用 · 数据本机</div></div>
+  <div class="small" id="status" style="text-align:right"></div>
+</header>
+<nav id="tabs">
+  <button data-tab="workbench" class="active">工作台</button>
+  <button data-tab="lesson">教案/进度</button>
+  <button data-tab="bigbreak">大课间</button>
+  <button data-tab="fitness">体质测试</button>
+  <button data-tab="training">训练竞赛</button>
+  <button data-tab="observe">观摩</button>
+  <button data-tab="safety">安全/器材</button>
+  <button data-tab="workload">工作量</button>
+  <button data-tab="growth">专业成长</button>
+  <button data-tab="about">说明/README</button>
+</nav>
+<main id="app"></main>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   0. 版本与数据层（含旧版迁移）
+   审计修正：KEY/KEY_V2 改为 STORAGE_KEY/STORAGE_KEY_V2，消除“密钥”歧义
+============================================================ */
+const VERSION = "2.0";
+const STORAGE_KEY = "rural_pe_teacher_workbench_v1";
+const STORAGE_KEY_V2 = "rural_pe_teacher_workbench_v2";
+const defaultState = {
+  meta: { version: VERSION, createdAt: new Date().toISOString(), lastBackupAt: "" },
+  todos: [],
+  lessonPlans: [],
+  semesterPlans: [],
+  bigBreakPlans: [],
+  students: [],
+  fitnessRecords: [],
+  trainingPlans: [],
+  safetyChecks: [],
+  equipment: [],
+  equipmentLogs: [],
+  workload: [],
+  weeklyTimetable: [],
+  growth: [],
+  observations: []
+};
+
+let state = loadState();
+let activeTab = "workbench";
+let currentGeneratedLesson = null;
+let currentGeneratedBigBreak = null;
+let currentGeneratedSemester = null;
+let lastDeleted = null;
+
+function loadState() {
+  try {
+    const rawV2 = localStorage.getItem(STORAGE_KEY_V2);
+    if (rawV2) {
+      const s = JSON.parse(rawV2);
+      return normalize(s);
+    }
+    const rawV1 = localStorage.getItem(STORAGE_KEY);
+    if (rawV1) {
+      const old = JSON.parse(rawV1);
+      const migrated = normalize(Object.assign({}, JSON.parse(JSON.stringify(defaultState)), old));
+      migrated.meta.version = VERSION;
+      migrated.meta.migratedFromV1 = true;
+      localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(migrated));
+      return migrated;
+    }
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(defaultState));
+}
+
+/* 审计修正：白名单逐键复制，防止导入 JSON 的原型污染 */
+function normalize(s) {
+  const out = JSON.parse(JSON.stringify(defaultState));
+  if (!s || typeof s !== "object") return out;
+  const allowed = Object.keys(defaultState);
+  for (const k of allowed) {
+    if (k === "meta") {
+      const m = (s.meta && typeof s.meta === "object") ? s.meta : {};
+      out.meta = {
+        version: VERSION,
+        createdAt: (typeof m.createdAt === "string" && m.createdAt) || out.meta.createdAt,
+        lastBackupAt: (typeof m.lastBackupAt === "string" && m.lastBackupAt) || "",
+        migratedFromV1: !!m.migratedFromV1
+      };
+    } else if (Array.isArray(defaultState[k])) {
+      out[k] = Array.isArray(s[k]) ? s[k] : [];
+    }
+  }
+  return out;
+}
+
+function saveState() {
+  state.meta.version = VERSION;
+  localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(state));
+  updateStatus();
+}
+function updateStatus() {
+  const el = document.getElementById("status");
+  if (el) el.textContent = "已保存 " + new Date().toLocaleTimeString("zh-CN", {hour:"2-digit",minute:"2-digit"});
+  const v = document.getElementById("versionLine");
+  if (v) v.textContent = "v" + VERSION + " · 离线可用 · 数据本机";
+}
+function uid() { return Date.now().toString(36) + Math.random().toString(16).slice(2); }
+function esc(v) { return String(v ?? "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function todayISO() { const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function monthKey(d=new Date()){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); }
+function startOfWeek(d=new Date()){ const x=new Date(d); const day=(x.getDay()+6)%7; x.setDate(x.getDate()-day); x.setHours(0,0,0,0); return x; }
+function numOrNull(v){ if(v===""||v===null||v===undefined) return null; const n=Number(v); return Number.isFinite(n)?n:null; }
+function daysSince(iso){ if(!iso) return 999; const d=new Date(iso+"T00:00:00"); return Math.floor((Date.now()-d.getTime())/86400000); }
+function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2000); }
+function download(filename, content, type="text/plain;charset=utf-8"){
+  const blob=new Blob([content],{type}); const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function csvText(rows){ return "\uFEFF"+rows.map(r=>r.map(c=>`"${String(c??"").replace(/"/g,'""')}"`).join(",")).join("\n"); }
+
+/* ============================================================
+   1. 项目库
+============================================================ */
+const templates = {
+  jump:{name:"跳绳",skillA:"并脚跳、单脚交换跳与摇绳节奏",skillB:"向前摇绳、长绳进出与同伴配合",combo:"跳绳+跑跳+核心力量循环",game:"30秒计数挑战、长绳“鱼贯而入”",warm:"原地小步跑、手腕脚踝激活、无绳摇绳模仿",demo:"摇绳以腕为轴、前脚掌轻落地、绳长以踩绳后手柄到腋下为宜",fitness:"平板支撑20秒×2组、原地高抬腿20秒×2组",equipment:"短绳不足时分两组轮换；长绳可用牢固麻绳替代并课前试拉；无绳做徒手摇绳模仿。",homework:"家庭跳绳3组×1分钟并记录次数，穿运动鞋，注意场地平整。"},
+  football:{name:"足球",skillA:"脚内侧传球、停球与无球跑动",skillB:"运球变向、简单二过一与射门",combo:"运球+传球+折返跑组合",game:"小场地3对3、传球计数挑战",warm:"侧向移动、髋踝激活、脚底踩球模仿",demo:"支撑脚指向目标、脚内侧触球中后部、抬头观察",fitness:"折返跑10米×4、深蹲15次×2组",equipment:"球不足时用纸球/废旧布球/矿泉水瓶做标志物；标志盘用粉笔画线或书包替代；分组轮换。",homework:"原地踩球、左右脚内侧拨球各2分钟；找一块安全空地练习。"},
+  basketball:{name:"篮球",skillA:"原地运球、行进间运球与双手胸前传球",skillB:"变向运球、传切配合与近距离投篮",combo:"运球+传球+上篮脚步组合",game:"半场3对3、运球接力",warm:"手指手腕激活、侧滑步、原地运球模仿",demo:"屈膝降重心、用手指手腕控球、抬头不看球",fitness:"深蹲15次×2组、俯撑20秒×2组",equipment:"球不足时每人一球改为分组轮换；篮筐不足用粉笔画目标框；标志物用书包/水瓶替代。",homework:"原地左右手运球各2分钟，记录连续不掉球次数。"},
+  track:{name:"田径跑跳投",skillA:"站立式起跑、途中跑与正确摆臂",skillB:"立定跳远/跳绳/轻物投掷的基本发力",combo:"跑+跳+投循环站",game:"迎面接力、跳远小比赛",warm:"动态弓步、高抬腿、踝关节激活",demo:"起跑重心前移、摆臂以肩为轴、落地屈膝缓冲",fitness:"高抬腿20秒×2组、立定跳远5次×2组",equipment:"无标志盘用粉笔画线；轻物投掷用废旧纸团/沙包；秒表可用手机计时。",homework:"原地摆臂1分钟×3组、立定跳远5次×2组，注意落地缓冲。"},
+  fitness:{name:"体能课",skillA:"力量、耐力、灵敏与柔韧的基础动作",skillB:"循环站组织、自我监控与负荷调节",combo:"4—6站体能循环",game:"小组循环计时挑战",warm:"动态拉伸、开合跳、原地小步跑",demo:"动作质量优先，保持呼吸，不憋气；教师示范低强度版本",fitness:"深蹲、平板支撑、原地高抬腿、折返跑",equipment:"无器材也可完成；书包作标志物，水瓶装水作轻负重；台阶可用于低强度踏跳。",homework:"家庭体能3组：深蹲10次、平板支撑20秒、原地踏步1分钟。"},
+  health:{name:"健康教育",skillA:"运动安全、用眼卫生、营养与饮水常识",skillB:"运动损伤简单处理、求助与报告流程",combo:"健康知识问答+轻度活动",game:"情景判断接力、知识卡片配对",warm:"颈肩激活、踝关节活动、原地踏步",demo:"用案例、图片和情景判断讲解，避免长时间静坐",fitness:"原地踏步、肩颈拉伸、深呼吸放松",equipment:"无器材；用自制卡片、黑板画图、学生情景表演。",homework:"向家人复述一条健康知识，并记录今天饮水量。"},
+  local:{name:"乡土体育/跨学科",skillA:"跳房子、踢毽子、滚铁环等乡土游戏基本动作",skillB:"本地传统体育资源的安全改造与规则设计",combo:"乡土游戏+体能循环",game:"小组闯关、传统游戏展示",warm:"模仿劳动动作、关节激活、平衡练习",demo:"讲清规则与安全边界，慢动作示范，先练后赛",fitness:"平衡走、轻物负重走、折返跑",equipment:"粉笔画格子、废旧布做沙包、竹竿需打磨无刺并检查；不组织高风险对抗。",homework:"采访长辈一个传统游戏，下次课分享规则和安全注意事项。"},
+  broadcast:{name:"广播体操/队列队形",skillA:"口令反应、三面转法与齐步走",skillB:"广播操动作路线、节奏与整齐度",combo:"队列变换+广播操分段+体能",game:"口令反应游戏、小组会操",warm:"原地踏步、转体、肩绕环、踝关节激活",demo:"口令短促清晰、动作分解到节拍、镜面示范",fitness:"原地高抬腿20秒×2、深蹲12次×2组",equipment:"无器材；用粉笔画点位；哨子不足用口令或手势。",homework:"向家长展示一节广播操，并记录练习遍数。"},
+  martial:{name:"武术操/简单武术",skillA:"抱拳礼、基本手型步型与冲拳",skillB:"简单组合动作与精气神表达",combo:"武术操分段+平衡+体能",game:"小组展示、动作记忆挑战",warm:"肩腰髋激活、弓步压腿、原地冲拳",demo:"先讲攻防含义再示范、慢速分解、强调安全距离",fitness:"马步30秒×2、冲拳20次×2组",equipment:"无器材；空地即可；强调间距和动作方向控制。",homework:"练习抱拳礼和一套简单组合，向家人展示。"},
+  ropeclimb:{name:"爬绳/攀爬（如有设施）",skillA:"手脚协调攀爬与安全落地",skillB:"攀爬节奏与同伴保护",combo:"攀爬+核心+灵敏",game:"安全攀爬挑战",warm:"手指握力激活、肩背激活、踝关节",demo:"强调握法、三点固定、落地屈膝；教师全程保护",fitness:"悬垂10秒×2、俯撑20秒×2组",equipment:"无设施则改为低杠悬垂或爬行练习；严禁无保护攀爬。",homework:"家庭俯撑10次×2组、悬垂（如有安全条件）。"},
+  none:{name:"零器材课",skillA:"徒手跑跳、平衡、爬行与核心动作",skillB:"循环站组织与自我负荷调节",combo:"5站零器材体能循环",game:"小组循环计时、动作质量比拼",warm:"动态拉伸、开合跳、原地小步跑",demo:"教师低强度示范、讲清安全边界、小组长带练",fitness:"深蹲、平板支撑、原地高抬腿、折返跑、熊爬",equipment:"完全不需要器材；书包/水瓶作标志物；粉笔画线即可。",homework:"家庭零器材体能3组，记录完成情况。"}
+};
+
+function gradeOptions(){ let s=""; for(let i=1;i<=9;i++) s+=`<option value="${i}年级">${i}年级</option>`; return s; }
+function topicOptions(){ return Object.entries(templates).map(([k,v])=>`<option value="${k}">${esc(v.name)}</option>`).join(""); }
+function studentOptions(){
+  if(!state.students.length) return `<option value="">请先添加学生</option>`;
+  return state.students.map(s=>`<option value="${s.id}">${esc(s.name)}（${esc(s.grade)}${esc(s.className)}）</option>`).join("");
+}
+
+/* ============================================================
+   2. 观摩资源库
+   审计修正：真实教师姓名改为“授课教师”；移除/替换不合适外链
+============================================================ */
+const obsLibrary = [
+  {id:"o-nat-1",cat:"national",title:"国家中小学智慧教育平台 · 体育与健康课程",source:"教育部主办 · basic.smartedu.cn",level:"全学段",note:"体育板块含“体育与健康课程”“运动技能”“体育活动”“健康服务”4个栏目，覆盖体能、球类、田径、体操、民族民间传统体育等8个模块，全部免费。适合系统备课和查找标准动作示范。",url:"https://basic.smartedu.cn/",adapt:"乡村适配：无需付费，手机电脑均可打开；优先用“运动技能”中的分解示范视频弥补教师专项示范短板；可投屏到教室电视做室内课。"},
+  {id:"o-nat-2",cat:"national",title:"精品课例《行进间运球》（分层教学与学练赛一体化）",source:"国家中小学智慧教育平台",level:"小学",note:"可重点观摩其分层任务设计和“学练赛评”一体化组织。具体入口以平台“体育与健康”栏目当前展示为准。",url:"https://basic.smartedu.cn/",adapt:"乡村适配：球不足时借鉴其分组轮换和任务卡分层思路，不必一人一球；把“赛”的环节简化为小场地、少人数。"},
+  {id:"o-nat-3",cat:"national",title:"数字化精品课堂 · 体育课例展播",source:"国家中小学智慧教育平台“数字化精品课堂”栏目",level:"中小学",note:"展播多地数字化赋能课堂案例，可观摩技术如何辅助动作诊断和课堂组织。",url:"https://basic.smartedu.cn/",adapt:"乡村适配：不必追求昂贵设备，一部手机拍摄+慢放回看即可借鉴其“视频反馈纠错”做法。"},
+  {id:"o-pro-1",cat:"province",title:"三晋教研大讲堂（小学体育与健康）· 乡村教师跨学科课例",source:"山西省教育科学研究院",level:"小学",note:"包含乡镇中心小学授课教师执教的《负重前行悟长征——基于〈七律·长征〉的耐久跑跨学科主题学习》，以及足球大单元、健康课、田径大单元课例和评课。",url:"http://dev.ybolo.cn/menhu/mobile/live/play/5bb4a4d9713d49e3b2bf28ce9eaed070",adapt:"乡村适配：授课学校本身是乡镇中心小学，跨学科耐久跑只用负重物和场地，器材门槛低；重点看它如何把语文课文情境转化为跑动任务，以及大课间如何与乡土社团衔接。若回放地址失效，可在全网搜索课例标题。"},
+  {id:"o-pro-2",cat:"province",title:"浙江“百人千场”送教 · 教案迭代与学练评一致性",source:"浙江省教研系统",level:"中小学",note:"浙江省教研员结合示范课解读体育教案从1.0到4.0版本的迭代，重点在学练评一致性和教学内容结构化。",url:"https://www.zjteacher.net/",adapt:"乡村适配：关注其教案格式中“目标—任务—评价”的对应关系，可直接迁移到你自己的教案模板；不必照搬城市学校的大单元容量，按乡村课时节奏压缩。"},
+  {id:"o-pro-3",cat:"province",title:"“湖北好课堂”送教 · 新课标新教材新教学",source:"湖北省教育科学研究院",level:"中小学",note:"全省基础教育课程改革标杆品牌，送教活动聚焦新课标、新教材、新教学，含课例展示和专家点评。",url:"http://jyt.hubei.gov.cn/",adapt:"乡村适配：留意送教课在场地器材简化后的调整策略；对比自己学校的条件，记录“哪些环节可以保留、哪些必须替换”。"},
+  {id:"o-pro-4",cat:"province",title:"广东“粤动校园”· 体育精品课与课标对照回放",source:"广东体育频道 × 省教育厅",level:"中小学",note:"跳绳进阶、岭南武术操、水上安全教育等内容，每期配教学说明与课标对照表，可回放。",url:"",adapt:"乡村适配：跳绳和武术操对场地器材要求低，适合乡村学校直接借用；注意水上安全内容需结合本地水域风险改造，不可直接让学生下水实践。具体回放请在“广东教育”官方渠道或省教育厅官网搜索栏目名。"},
+  {id:"o-pro-5",cat:"province",title:"安徽基础教育资源公共平台 · 名师课堂",source:"安徽省教育资源平台",level:"中小学",note:"“名师课堂”展示国内、省内优质课评选获奖教师教学视频和特级教师优秀课例，可随时观摩。",url:"https://www.ahedu.cn/",adapt:"乡村适配：优先筛选“农村远程教育工程”标签的课例，场景与乡村学校更接近；关注教师如何在少器材条件下组织练习密度。"},
+  {id:"o-pro-6",cat:"province",title:"娄底市名师网络工作室 · 乡村帮扶示范课",source:"湖南娄底",level:"中小学",note:"农村教师通过手机或电脑观摩示范课实录，并获得“一对一”指导；工作室云端资源库含教案、课件、微课和大课间方案，免费向农村教师开放。",url:"",adapt:"乡村适配：这种“线上常态互动+线下集中送教”模式适合乡村教师持续跟进；重点关注大课间方案在土操场/小场地的落地版本。具体入口请在娄底市教育局官网或本地教研群获取。"},
+  {id:"o-rur-1",cat:"rural",title:"浙江省农村中小学现代远程教育工程 · 网络观摩课例（全学段）",source:"教师听课网收录",level:"小学为主",note:"包含大量农村学校教学实录，如《接力跑》《持轻物投远》《队列队形》《脚内侧踢固定球》《前滚翻》《高低拍球及篮球游戏》等，时长多在45—55分钟，可直接看到完整课堂组织。",url:"https://m.yanxiuwang.cn/Albums/info.html?order=new&p=2843",adapt:"乡村适配：这是最贴近乡村场景的课例库之一；重点看教师如何用有限器材组织全班练习、如何用口令和小组长减少排队等待。第三方站点可能需注册或含付费内容，建议先看免费课例，注意甄别广告。"},
+  {id:"o-rur-2",cat:"rural",title:"复式班体育课例：5—6年级合班《肩肘倒立》",source:"送教下乡活动记录",level:"小学高段",note:"授课对象为5、6年级合起来的复式班，共15名学生，展示复式班体育课的组织与保护方法。",url:"",adapt:"乡村适配：直接对应小规模学校复式教学场景；重点观摩如何按能力而非年级分组、如何设置同伴保护和小老师。"},
+  {id:"o-rur-3",cat:"rural",title:"小规模学校复式教学 · 体育与大课间展示",source:"区域教研活动记录",level:"小学",note:"包含小规模学校复式教学研讨中的体育课例和大课间体育艺术活动展示（足球绕杆、竹竿舞等）。",url:"",adapt:"乡村适配：竹竿舞、足球绕杆等对场地要求低、器材可自制或就地取材；关注复式班的分时轮换和安全员设置。"},
+  {id:"o-rur-4",cat:"rural",title:"乡村学校“零成本”极简数字化体育实践",source:"湖南祁阳市进宝塘镇中心学校",level:"初中/小学",note:"仅靠一部手机、一块显示屏和国家中小学智慧教育平台，让全校跳绳参与率从20%提升到100%。",url:"",adapt:"乡村适配：这是“低配置高产出”的典型；可借鉴其用平台微课做动作示范、用手机拍摄做反馈、用简单数据做激励的做法，不需要购买额外设备。"},
+  {id:"o-rur-5",cat:"rural",title:"“一师两校”合班教学 / 单班多级复式体育组织",source:"乡村学校实践与期刊案例",level:"小学",note:"涉及村小体育课“一师两校”合班教学、一至三年级三复式班的达标训练组织等真实场景。",url:"",adapt:"乡村适配：适合走教教师和单班复式学校；重点看交通时间约束下的课时安排、跨校学生混合分组和安全责任衔接。"},
+  {id:"o-cro-1",cat:"cross",title:"跨学科乡土课例：《负重前行悟长征》耐久跑",source:"三晋教研大讲堂 · 乡镇中心小学",level:"五年级",note:"基于《七律·长征》的耐久跑跨学科主题学习，将语文情境与耐力跑结合，授课学校为乡镇中心小学。",url:"http://dev.ybolo.cn/menhu/mobile/live/play/5bb4a4d9713d49e3b2bf28ce9eaed070",adapt:"乡村适配：负重物可用书包/沙袋/水瓶替代；路线可利用校园周边安全空地；注意控制负重重量和跑动总量，避免为“情境”牺牲运动安全。若回放地址失效，可在全网搜索课例标题。"},
+  {id:"o-cro-2",cat:"cross",title:"“运球插秧”篮球跨学科设计",source:"2022版课标跨学科主题学习案例",level:"小学/初中",note:"以运球模拟农民田间往返劳作，用控球稳定性对应农作精细耐心，巩固运球节奏与控球技巧。",url:"",adapt:"乡村适配：乡村学生对农作场景熟悉，情境代入快；用粉笔画“田垄”、水瓶作“秧苗”，零成本可复制；注意场地平整和运球方向控制。"},
+  {id:"o-cro-3",cat:"cross",title:"“四季农忙运动会”单元设计",source:"跨学科主题学习设计案例",level:"小学",note:"以“四季农忙运动会的策划与实施”为主题，融合体育与劳动教育，体现单元视域下的跨学科设计。",url:"",adapt:"乡村适配：可直接改造为班级/校级体育节方案；用真实农事动作（搬运、播种、收获）设计跑、跳、投、负重任务；安全边界要提前划定，避免使用真实农具。"},
+  {id:"o-cro-4",cat:"cross",title:"《校园定向越野——家乡文化我传承》",source:"跨学科主题教研课例",level:"小学/初中",note:"以耐久跑为载体，融入家乡文化、数学确定位置、音乐节奏和营养知识，在真实校园情境中完成定向任务。",url:"",adapt:"乡村适配：乡村校园和周边自然资源更适合定向越野；用粉笔画简易地图、教师提前踩点排除危险区域；数学/地理教师可协同设计任务点。"},
+  {id:"o-cro-5",cat:"cross",title:"“体育+劳动”跨学科游戏：吹响劳动的号角",source:"乡村体育游戏设计案例",level:"小学",note:"以农村“农忙”场景为素材，通过往返跑发展跑的能力，同时渗透劳动情感和意志品质。",url:"",adapt:"乡村适配：无需器材，利用操场或安全空地即可；重点观摩它如何在游戏中保持运动负荷，而不是变成单纯的情景表演。"}
+];
+
+/* ============================================================
+   3. 特异体质提醒
+============================================================ */
+function specialReminderHtml() {
+  const special = state.students.filter(s => s.special && s.special !== "无");
+  if (!special.length) return "";
+  return `<div class="reminder no-print"><strong>特异体质/免测提醒：</strong>${special.map(s => `${esc(s.name)}（${esc(s.special)}）`).join("、")}。安排活动前请确认见习/免测要求，并在教案中标注。</div>`;
+}
+
+/* ============================================================
+   4. 渲染框架
+============================================================ */
+const views = {
+  workbench: renderWorkbench, lesson: renderLesson, bigbreak: renderBigBreak,
+  fitness: renderFitness, training: renderTraining, observe: renderObserve,
+  safety: renderSafety, workload: renderWorkload, growth: renderGrowth,
+  about: renderAbout
+};
+function render() {
+  document.getElementById("app").innerHTML = specialReminderHtml() + views[activeTab]();
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("active", b.dataset.tab === activeTab));
+  updateStatus();
+}
+document.querySelectorAll("#tabs button").forEach(b => b.addEventListener("click", () => { activeTab = b.dataset.tab; render(); }));
+
+/* ============================================================
+   5. 工作台
+============================================================ */
+function renderWorkbench() {
+  const ws = startOfWeek();
+  const weekMinutes = state.workload.filter(w => w.date && new Date(w.date+"T00:00:00") >= ws).reduce((a,w)=>a+(Number(w.minutes)||0),0);
+  const pending = state.todos.filter(t=>!t.done).length;
+  const mk = monthKey();
+  const monthMinutes = state.workload.filter(w=>w.date && w.date.startsWith(mk)).reduce((a,w)=>a+(Number(w.minutes)||0),0);
+  const backupWarn = daysSince(state.meta.lastBackupAt) >= 7 && (state.students.length || state.fitnessRecords.length || state.workload.length);
+  const todoRows = state.todos.slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))).map(t=>`
+    <tr>
+      <td><input type="checkbox" ${t.done?"checked":""} onchange="toggleTodo('${t.id}')" style="min-width:20px;min-height:20px"></td>
+      <td style="${t.done?"text-decoration:line-through;color:#888":""}">${esc(t.text)}</td>
+      <td>${esc(t.date)}</td>
+      <td><button class="danger" style="padding:4px 7px;font-size:11px" onclick="delWithUndo('todos','${t.id}')">删</button></td>
+    </tr>`).join("");
+  return `
+  ${backupWarn?`<div class="reminder no-print"><strong>备份提醒：</strong>距上次导出已超过7天，建议到“工作台→数据管理”导出备份，防止清理缓存或换手机导致数据丢失。<button class="secondary" style="margin-left:6px;padding:4px 8px;font-size:12px" onclick="exportJSON()">立即导出</button></div>`:""}
+  <div class="card">
+    <h2>本周概览</h2>
+    <div class="grid">
+      <div class="stat"><div class="small">未完成待办</div><strong>${pending}</strong></div>
+      <div class="stat"><div class="small">本周工作量</div><strong>${weekMinutes}</strong><div class="small">分钟</div></div>
+      <div class="stat"><div class="small">本月工作量</div><strong>${monthMinutes}</strong><div class="small">分钟</div></div>
+      <div class="stat"><div class="small">学生 / 测试记录</div><strong>${state.students.length} / ${state.fitnessRecords.length}</strong></div>
+      <div class="stat"><div class="small">观摩笔记</div><strong>${state.observations.length}</strong></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>待办清单</h2>
+    <form onsubmit="return addTodo(event)">
+      <div class="row">
+        <div><label>事项</label><input id="todoText" required placeholder="如：上报测试数据、检查跳绳数量"></div>
+        <div><label>日期</label><input type="date" id="todoDate" value="${todayISO()}"></div>
+      </div>
+      <div class="actions"><button>添加待办</button></div>
+    </form>
+    ${state.todos.length?`<table><tr><th>完成</th><th>事项</th><th>日期</th><th></th></tr>${todoRows}</table>`:`<p class="empty">暂无待办。</p>`}
+  </div>
+  <div class="card">
+    <h2>今日提示</h2>
+    <ul>
+      <li><strong>课前安全：</strong>检查场地石块、坑洼、湿滑；询问身体不适；检查鞋带和口袋硬物；确认特异体质学生见习安排。</li>
+      <li><strong>运动负荷：</strong>平均心率可参考140—160次/分，观察面色、呼吸和自述，及时降强度。</li>
+      <li><strong>器材不足：</strong>优先“循环站+分组轮换+自制替代”，不要因器材少就放羊。</li>
+      <li><strong>复式班/大班额：</strong>用A/B任务卡、小组长安全员、定点巡回，减少无效排队。</li>
+      <li><strong>留痕：</strong>大课间、训练、测试、走教交通都记入“工作量”；观摩后记一条笔记，比只看不记有用。</li>
+    </ul>
+  </div>
+  <div class="card no-print">
+    <h2>数据管理</h2>
+    <div class="actions">
+      <button onclick="exportJSON()">导出备份 JSON</button>
+      <label class="inline-btn" style="text-decoration:none">导入备份<input type="file" id="importFile" accept=".json" onchange="importJSON(event)" style="display:none"></label>
+      <button class="danger" onclick="resetAll()">清空全部数据</button>
+    </div>
+    <p class="small">换电脑、清理浏览器或期末归档前，请先导出JSON。导入会覆盖当前数据。学生信息仅保存在本机，导出文件不要随意发群。</p>
+  </div>`;
+}
+function addTodo(e){ e.preventDefault(); const text=document.getElementById("todoText").value.trim(); if(!text) return false;
+  state.todos.push({id:uid(),text,date:document.getElementById("todoDate").value||todayISO(),done:false}); saveState(); render(); return false; }
+function toggleTodo(id){ const t=state.todos.find(x=>x.id===id); if(t) t.done=!t.done; saveState(); render(); }
+
+/* ============================================================
+   6. 撤销删除
+============================================================ */
+function delWithUndo(collection,id){
+  const arr=state[collection]; const idx=arr.findIndex(x=>x.id===id); if(idx<0) return;
+  lastDeleted={collection,item:arr[idx],index:idx};
+  arr.splice(idx,1); saveState(); render();
+  toast("已删除，10秒内可撤销");
+  setTimeout(()=>{ if(lastDeleted && lastDeleted.item.id===id){ lastDeleted=null; } },10000);
+}
+function undoDelete(){
+  if(!lastDeleted) return toast("没有可撤销的删除");
+  const {collection,item,index}=lastDeleted;
+  state[collection].splice(Math.min(index,state[collection].length),0,item);
+  lastDeleted=null; saveState(); render(); toast("已恢复");
+}
+
+/* ============================================================
+   7. 教案 + 学期进度表
+============================================================ */
+function renderLesson(){
+  return `
+  <div class="card no-print">
+    <h2>课时教案生成器</h2>
+    <p class="small">按2022版课标思路生成单课时教案和18课时大单元框架，内置低配置替代、复式班组织、安全提示、运动负荷。</p>
+    <form onsubmit="return generateLesson(event)">
+      <div class="row">
+        <div><label>年级</label><select id="lGrade">${gradeOptions()}</select></div>
+        <div><label>班级</label><input id="lClass" value="1班"></div>
+        <div><label>人数</label><input type="number" id="lSize" value="40" min="1"></div>
+        <div><label>场地</label><select id="lField"><option>土操场/硬化地</option><option>篮球场</option><option>田径场</option><option>教室前空地</option><option>室内备用</option></select></div>
+        <div><label>器材情况</label><input id="lEquip" placeholder="如：短绳20根、标志盘6个"></div>
+        <div><label>主教材</label><select id="lTopic">${topicOptions()}</select></div>
+        <div><label>天气/条件</label><select id="lWeather"><option>正常</option><option>高温</option><option>雨天室内</option><option>大风/扬尘</option></select></div>
+        <div><label>复式班/大班额</label><label class="check"><input type="checkbox" id="lMulti">是，需要分组任务卡</label></div>
+      </div>
+      <div><label>学习目标（留空自动生成）</label><textarea id="lGoal" rows="2" placeholder="建议分三条：运动能力 / 健康行为 / 体育品德"></textarea></div>
+      <div class="actions">
+        <button>生成教案</button>
+        <button type="button" class="secondary" onclick="printArea('lessonOutput')">打印</button>
+        <button type="button" class="secondary" onclick="saveGeneratedLesson()">保存教案</button>
+      </div>
+    </form>
+    <div id="lessonOutput"></div>
+  </div>
+
+  <div class="card no-print">
+    <h2>学期教学进度表</h2>
+    <p class="small">开学第一周通常就要交。按周次自动排单元和主教材，可打印或导出CSV。</p>
+    <form onsubmit="return generateSemester(event)">
+      <div class="row">
+        <div><label>年级</label><select id="sGrade">${gradeOptions()}</select></div>
+        <div><label>学期</label><select id="sTerm"><option>上学期</option><option>下学期</option></select></div>
+        <div><label>总周数</label><input type="number" id="sWeeks" value="20" min="10" max="24"></div>
+        <div><label>每周课时</label><select id="sPerWeek"><option>3</option><option>4</option><option>2</option></select></div>
+      </div>
+      <div class="actions"><button>生成进度表</button><button type="button" class="secondary" onclick="exportSemesterCSV()">导出CSV</button><button type="button" class="secondary" onclick="printArea('semesterOutput')">打印</button></div>
+    </form>
+    <div id="semesterOutput"></div>
+  </div>
+
+  <div class="card"><h2>已保存教案</h2>${savedPlansHtml("lessonPlans")}</div>
+  <div class="card"><h2>已保存进度表</h2>${savedPlansHtml("semesterPlans")}</div>`;
+}
+function generateLesson(e){
+  e.preventDefault();
+  const key=document.getElementById("lTopic").value; const t=templates[key]||templates.fitness;
+  const grade=document.getElementById("lGrade").value; const cls=document.getElementById("lClass").value.trim()||"1班";
+  const size=document.getElementById("lSize").value||"—"; const field=document.getElementById("lField").value;
+  const equip=document.getElementById("lEquip").value.trim()||"按现有器材分组轮换";
+  const weather=document.getElementById("lWeather").value; const multi=document.getElementById("lMulti").checked;
+  const goalInput=document.getElementById("lGoal").value.trim();
+  const goal=goalInput||`运动能力：80%以上学生能完成${t.skillA}；健康行为：知道${t.name}的安全要点并能在练习中调整负荷；体育品德：在小组练习中遵守规则、主动帮助同伴。`;
+  const unit=[`安全常规、场地器材检查与摸底（${t.name}）`,`专项热身、基本站姿/握法/步伐与动作诊断`,`技能学习A：${t.skillA}`,`技能学习A：分解练习与纠错`,`技能学习A：组合练习与个人挑战`,`技能学习B：${t.skillB}`,`技能学习B：同伴配合与简单情境`,`技能学习B：分层练习与弱项补偿`,`组合练习：${t.combo}`,`组合练习：增加距离/时间/次数变量`,`情境运用：${t.game}`,`简化比赛与规则意识`,`体能补偿：力量、耐力、灵敏循环`,`分层挑战：A/B/C任务卡`,`展示与互评：小组展示动作质量`,`错误动作诊断与自我纠正`,`班级小比赛/体育节项目`,`单元评价、反思与校外锻炼计划`].map((x,i)=>`第${i+1}课 ${x}`).join("\n");
+  let weatherTip="";
+  if(weather==="高温") weatherTip="\n高温调整：避开正午，降低跑跳量，增加饮水与阴凉处休息，关注头晕恶心。";
+  if(weather==="雨天室内") weatherTip="\n室内替代：改为教室/走廊安全区域的柔韧、平衡、健康知识问答和低强度循环；严禁湿滑地面跑跳。";
+  if(weather==="大风/扬尘") weatherTip="\n扬尘调整：减少跑动和投掷，改为背风区域低强度练习，必要时转室内健康课。";
+  const content=`【大单元框架（18课时）】
+${unit}
+
+【单课时教案】
+年级/班级：${grade}${cls}
+人数：${size}    场地：${field}    器材：${equip}
+主教材：${t.name}    天气/条件：${weather}
+学习目标：
+${goal}
+
+一、准备部分（8分钟）
+1. 集合整队、点名、安全教育（1分钟）：检查鞋带、口袋硬物，询问身体不适，确认特异体质学生见习安排。
+2. 慢跑 + 动态拉伸（4分钟）：肩绕环、髋绕环、弓步走、侧向移动。
+3. 专项激活（3分钟）：${t.warm}
+
+二、基本部分（28分钟）
+1. 讲解示范（5分钟）：${t.demo}；明确1个观察点。
+2. 分层练习（12分钟）：A组（基础）完成分解动作；B组（提高）完成组合动作；教师巡回纠错，每6—8分钟轮换。
+3. 组合/简化比赛（8分钟）：${t.game}；强调规则与安全边界。
+4. 体能补偿（3分钟）：${t.fitness}
+
+三、结束部分（5分钟）
+放松拉伸、提问“今天学会了什么”、同伴互评、收还器材。
+
+运动负荷：平均心率目标140—160次/分；练习密度约50%—65%；根据学生面色、呼吸和自述及时调整。
+安全提示：课前检查场地（石块、坑洼、湿滑）；询问病史；对抗项目限定动作和区域；随身备简易急救包；发生伤害按预案处理并报告。
+器材替代/低配置策略：${t.equipment}
+复式班/大班额组织：${multi?"A组（低年级/基础）做分解模仿和小组计数，B组（高年级/提高）做组合练习并担任安全员；每6—8分钟轮换，教师定点巡回，小组长持任务卡。":"按能力分组，每组指定组长；器材不足时采用循环站和轮换练习。"}
+校外锻炼1小时建议：${t.homework}${weatherTip}`;
+  currentGeneratedLesson={id:uid(),title:`${grade}${cls} ${t.name} 教案`,created:new Date().toLocaleString("zh-CN"),content};
+  document.getElementById("lessonOutput").innerHTML=`<h3>生成结果</h3><pre>${esc(content)}</pre>`;
+  return false;
+}
+function saveGeneratedLesson(){
+  if(!currentGeneratedLesson) return toast("请先生成教案");
+  state.lessonPlans.push(currentGeneratedLesson); saveState(); render(); toast("教案已保存");
+}
+function generateSemester(e){
+  e.preventDefault();
+  const grade=document.getElementById("sGrade").value; const term=document.getElementById("sTerm").value;
+  const weeks=Math.max(10,Math.min(24,Number(document.getElementById("sWeeks").value)||20));
+  const perWeek=Number(document.getElementById("sPerWeek").value)||3;
+  const topics=Object.keys(templates).filter(k=>k!=="health");
+  const rows=[]; let ti=0;
+  for(let w=1; w<=weeks; w++){
+    let note="";
+    if(w===1) note="安全常规/摸底";
+    else if(w===Math.ceil(weeks/2)) note="期中展示/体质测试";
+    else if(w===weeks) note="单元评价/学期总结";
+    const topic=templates[topics[ti%topics.length]].name;
+    rows.push({week:w,topic,lessons:perWeek,note});
+    if(w%3===0) ti++;
+  }
+  const lines=rows.map(r=>`第${r.week}周 | ${r.topic} | ${r.lessons}课时 | ${r.note}`).join("\n");
+  const content=`【学期教学进度表】
+年级：${grade}    学期：${term}    总周数：${weeks}    每周课时：${perWeek}
+
+周次 | 主教材/单元 | 课时 | 备注
+${lines}
+
+说明：本表按乡村学校常见节奏生成，可按实际校历、节假日和师资情况调整。跨学科主题学习建议每学期安排不少于总课时10%，可结合“乡土体育/跨学科”项目落实。`;
+  currentGeneratedSemester={id:uid(),title:`${grade}${term} 进度表`,created:new Date().toLocaleString("zh-CN"),content,rows};
+  document.getElementById("semesterOutput").innerHTML=`<h3>生成结果</h3><pre>${esc(content)}</pre><button class="secondary" onclick="saveSemester()">保存进度表</button>`;
+  return false;
+}
+function saveSemester(){
+  if(!currentGeneratedSemester) return toast("请先生成进度表");
+  state.semesterPlans.push(currentGeneratedSemester); saveState(); render(); toast("进度表已保存");
+}
+function exportSemesterCSV(){
+  if(!currentGeneratedSemester || !currentGeneratedSemester.rows) return toast("请先生成进度表");
+  const rows=[["周次","主教材/单元","课时","备注"]];
+  currentGeneratedSemester.rows.forEach(r=>rows.push([r.week,r.topic,r.lessons,r.note]));
+  download("学期教学进度表.csv",csvText(rows),"text/csv;charset=utf-8");
+}
+function savedPlansHtml(collection){
+  const arr=state[collection]||[];
+  if(!arr.length) return `<p class="empty">暂无保存。</p>`;
+  return arr.slice().reverse().map(p=>`
+    <details>
+      <summary>${esc(p.title)} <span class="small">${esc(p.created||"")}</span></summary>
+      <pre>${esc(p.content)}</pre>
+      <button class="danger no-print" style="padding:4px 8px;font-size:11px" onclick="delWithUndo('${collection}','${p.id}')">删除</button>
+      ${lastDeleted?`<button class="secondary no-print" style="padding:4px 8px;font-size:11px" onclick="undoDelete()">撤销删除</button>`:""}
+    </details>`).join("");
+}
+function printArea(id){
+  const el=document.getElementById(id);
+  const html=el && el.innerHTML.trim()?el.innerHTML:document.getElementById("app").innerHTML;
+  const w=window.open("","_blank");
+  w.document.write(`<html><head><title>打印</title><style>
+    body{font-family:"Microsoft YaHei",sans-serif;padding:16px;line-height:1.6;font-size:12px}
+    pre{white-space:pre-wrap;font-size:12px;line-height:1.6}
+    table{width:100%;border-collapse:collapse}th,td{border:1px solid #999;padding:4px}
+  </style></head><body>${html}</body></html>`);
+  w.document.close(); w.focus(); w.print();
+}
+
+/* ============================================================
+   8. 大课间
+============================================================ */
+function renderBigBreak(){
+  return `
+  <div class="card no-print">
+    <h2>大课间 / 课外活动方案生成器</h2>
+    <form onsubmit="return generateBigBreak(event)">
+      <div class="row">
+        <div><label>场地</label><select id="bField"><option>土操场/硬化地</option><option>篮球场</option><option>田径场</option><option>教室前空地</option><option>室内备用</option></select></div>
+        <div><label>人数</label><input type="number" id="bSize" value="200" min="1"></div>
+        <div><label>器材</label><input id="bEquip" placeholder="如：短绳30根、标志盘6个"></div>
+        <div><label>主题</label><select id="bTheme"><option value="circuit">无器材体能循环</option><option value="rope">跳绳</option><option value="ball">球类</option><option value="local">乡土游戏</option><option value="broadcast">广播操/队列</option><option value="run">跑操/耐力</option></select></div>
+        <div><label>时长（分钟）</label><input type="number" id="bMinutes" value="30" min="15" max="45"></div>
+      </div>
+      <div class="actions"><button>生成方案</button><button type="button" class="secondary" onclick="printArea('bigBreakOutput')">打印</button><button type="button" class="secondary" onclick="saveGeneratedBigBreak()">保存方案</button></div>
+    </form>
+    <div id="bigBreakOutput"></div>
+  </div>
+  <div class="card"><h2>已保存方案</h2>${savedPlansHtml("bigBreakPlans")}</div>`;
+}
+function generateBigBreak(e){
+  e.preventDefault();
+  const field=document.getElementById("bField").value; const size=document.getElementById("bSize").value||"—";
+  const equip=document.getElementById("bEquip").value.trim()||"按现有器材轮换";
+  const theme=document.getElementById("bTheme").value;
+  const minutes=Math.max(15,Math.min(45,Number(document.getElementById("bMinutes").value)||30));
+  const themes={
+    circuit:{name:"无器材体能循环",stations:["原地高抬腿","开合跳/台阶跳","平板支撑或俯撑","折返跑/绕标志物"],alt:"书包、水瓶作标志物；无器材也能完成"},
+    rope:{name:"跳绳",stations:["单人并脚跳","单脚交换跳","长绳鱼贯而入","跳绳+折返跑"],alt:"短绳不足分两组轮换；长绳用牢固麻绳并课前试拉"},
+    ball:{name:"球类",stations:["原地运球","行进间运球","传球计数","小场地简化比赛"],alt:"球不足用纸球/布球/水瓶标志物；分组轮换"},
+    local:{name:"乡土游戏",stations:["跳房子","踢毽子/沙包","平衡走","小组闯关"],alt:"粉笔画格、废旧布做沙包；竹竿需打磨无刺，不组织高风险动作"},
+    broadcast:{name:"广播操/队列",stations:["整队与口令反应","广播操分段","队列变换","体能小循环"],alt:"无器材；粉笔点位；哨子不足用口令/手势"},
+    run:{name:"跑操/耐力",stations:["队列跑","折返跑","高抬腿","放松走"],alt:"手机计时；扬尘天降低跑量或转室内"}
+  };
+  const t=themes[theme];
+  const midStart=10; const midEnd=Math.max(12,minutes-5);
+  const content=`【${minutes}分钟大课间方案】
+场地：${field}    人数：${size}    器材：${equip}    主题：${t.name}
+
+0—5分钟：集合整队、点名、安全提示（鞋带、口袋硬物、身体不适报告、活动边界、特异体质见习）。
+5—10分钟：动态热身（肩绕环、髋绕环、弓步走、侧向移动、踝关节激活）。
+${midStart}—${midEnd}分钟：主活动“${t.name}”循环站
+  建议4站：${t.stations.join("；")}。每站3分钟，轮换2轮；班主任/小组长任安全员和计数员，教师定点巡回。
+${midEnd}—${minutes-2}分钟：班级小挑战或简化比赛（强调规则、轮换和鼓励）。
+最后2分钟：放松拉伸、总结、有序退场。
+
+安全提示：课前检查场地石块、坑洼、湿滑；高温减少跑跳、增加饮水；雨天转室内低强度活动；对抗项目限定动作和区域；发生伤害按预案报告处理。
+低配置替代：${t.alt}
+大班额/复式组织：按班级/小组分区，每区一名小组长；用哨声或手势轮换；低年级做模仿和计数，高年级做完整动作并担任安全员。
+留痕建议：活动结束后在“工作量”中记录“大课间”时长。`;
+  currentGeneratedBigBreak={id:uid(),title:`${t.name} 大课间方案（${minutes}分钟）`,created:new Date().toLocaleString("zh-CN"),content};
+  document.getElementById("bigBreakOutput").innerHTML=`<h3>生成结果</h3><pre>${esc(content)}</pre>`;
+  return false;
+}
+function saveGeneratedBigBreak(){ if(!currentGeneratedBigBreak) return toast("请先生成方案"); state.bigBreakPlans.push(currentGeneratedBigBreak); saveState(); render(); toast("方案已保存"); }
+
+/* ============================================================
+   9. 体质测试
+============================================================ */
+function renderFitness(){
+  const recs=state.fitnessRecords.slice().reverse();
+  const bmis=state.fitnessRecords.map(r=>r.bmi).filter(x=>typeof x==="number");
+  const avgBmi=bmis.length?(bmis.reduce((a,b)=>a+b,0)/bmis.length).toFixed(1):"—";
+  const specialCount=state.students.filter(s=>s.special&&s.special!=="无").length;
+  const studentRows=state.students.map(s=>`
+    <tr>
+      <td>${esc(s.name)}</td><td>${esc(s.gender)}</td><td>${esc(s.grade)}</td><td>${esc(s.className)}</td>
+      <td>${s.special?`<span class="tag warn">${esc(s.special)}</span>`:"—"}</td>
+      <td><button class="danger" style="padding:3px 6px;font-size:11px" onclick="delWithUndo('students','${s.id}')">删</button></td>
+    </tr>`).join("");
+  const recordRows=recs.map(r=>{
+    const s=state.students.find(x=>x.id===r.studentId);
+    return `<tr>
+      <td>${s?esc(s.name):"已删除"}</td><td>${esc(r.year)}</td><td>${r.height??"—"}</td><td>${r.weight??"—"}</td><td>${r.bmi??"—"}</td>
+      <td>${r.vital??"—"}</td><td>${r.sprint50??"—"}</td><td>${r.sitReach??"—"}</td><td>${r.longJump??"—"}</td>
+      <td>${r.sitUp??"—"}</td><td>${r.pullUp??"—"}</td><td>${esc(r.endurance||"—")}</td>
+      <td><button class="danger" style="padding:3px 6px;font-size:11px" onclick="delWithUndo('fitnessRecords','${r.id}')">删</button></td>
+    </tr>`;
+  }).join("");
+  return `
+  <div class="card">
+    <h2>学生名单</h2>
+    <form onsubmit="return addStudent(event)">
+      <div class="row">
+        <div><label>姓名</label><input id="sName" required></div>
+        <div><label>性别</label><select id="sGender"><option>男</option><option>女</option></select></div>
+        <div><label>年级</label><input id="sGrade" placeholder="如：7年级"></div>
+        <div><label>班级</label><input id="sClass" placeholder="如：1班"></div>
+        <div><label>特异体质/免测</label><select id="sSpecial"><option value="无">无</option><option>哮喘</option><option>心脏病</option><option>严重过敏</option><option>近期伤病</option><option>免测</option><option>其他</option></select></div>
+      </div>
+      <div class="actions"><button>添加学生</button></div>
+    </form>
+    <details style="margin-top:8px">
+      <summary>批量导入名单（一行一个：姓名,性别,年级,班级,特异体质）</summary>
+      <textarea id="batchStudents" rows="4" placeholder="张三,男,7年级,1班,无
+李四,女,7年级,1班,哮喘
+王五,男,7年级,1班,无"></textarea>
+      <div class="actions"><button onclick="batchAddStudents()">批量导入</button></div>
+    </details>
+    ${state.students.length?`<p class="small">共 ${state.students.length} 人，特异体质/免测 ${specialCount} 人。</p><table><tr><th>姓名</th><th>性别</th><th>年级</th><th>班级</th><th>备注</th><th></th></tr>${studentRows}</table>`:`<p class="empty">暂无学生，请添加或批量导入。</p>`}
+  </div>
+
+  <div class="card">
+    <h2>体质测试录入</h2>
+    <form onsubmit="return addFitness(event)">
+      <div class="row">
+        <div><label>学生</label><select id="fStudent">${studentOptions()}</select></div>
+        <div><label>学年</label><input id="fYear" value="${new Date().getFullYear()}"></div>
+        <div><label>身高 cm</label><input type="number" step="0.1" id="fHeight"></div>
+        <div><label>体重 kg</label><input type="number" step="0.1" id="fWeight"></div>
+        <div><label>肺活量 ml</label><input type="number" id="fVital"></div>
+        <div><label>50米 秒</label><input type="number" step="0.01" id="fSprint"></div>
+        <div><label>坐位体前屈 cm</label><input type="number" step="0.1" id="fSitReach"></div>
+        <div><label>立定跳远 cm</label><input type="number" step="0.1" id="fLongJump"></div>
+        <div><label>仰卧起坐 个</label><input type="number" id="fSitUp"></div>
+        <div><label>引体向上 个</label><input type="number" id="fPullUp"></div>
+        <div><label>800/1000米</label><input id="fEndurance" placeholder="如：4分20秒"></div>
+      </div>
+      <div class="actions"><button>保存测试记录</button></div>
+    </form>
+    <p class="small">BMI仅作计算参考，正式评分请按《国家学生体质健康标准》对应年龄、性别评分表执行。录入异常值（如身高小于100或大于220、体重小于20或大于200）会提示核对。</p>
+  </div>
+
+  <div class="card no-print">
+    <h2>测试季工具</h2>
+    <div class="actions">
+      <button class="secondary" onclick="printBlankSheet()">打印现场记录表</button>
+      <button class="secondary" onclick="exportFitnessReportCSV()">导出上报模板CSV</button>
+      <button class="secondary" onclick="exportFitnessCSV()">导出原始数据CSV</button>
+    </div>
+    <p class="small">现场记录表按班级打印，方便排队测试时手写记录；上报模板含学籍号占位、各项成绩和等级列，可导入Excel整理后上报。</p>
+  </div>
+
+  <div class="card">
+    <h2>测试记录与统计</h2>
+    <div class="grid">
+      <div class="stat"><div class="small">记录数</div><strong>${state.fitnessRecords.length}</strong></div>
+      <div class="stat"><div class="small">学生数</div><strong>${state.students.length}</strong></div>
+      <div class="stat"><div class="small">平均BMI</div><strong>${avgBmi}</strong></div>
+    </div>
+    <div class="filter-bar no-print">
+      <input id="fFitFilter" placeholder="按学生/学年筛选" oninput="render()">
+      <select id="fFitClassFilter" onchange="render()"><option value="">全部班级</option>${[...new Set(state.students.map(s=>s.className))].map(c=>`<option>${esc(c)}</option>`).join("")}</select>
+    </div>
+    ${recs.length?`<table><tr><th>学生</th><th>学年</th><th>身高</th><th>体重</th><th>BMI</th><th>肺活量</th><th>50米</th><th>体前屈</th><th>跳远</th><th>仰卧</th><th>引体</th><th>耐力</th><th></th></tr>${recordRows}</table>`:`<p class="empty">暂无测试记录。</p>`}
+  </div>`;
+}
+function addStudent(e){
+  e.preventDefault();
+  const name=document.getElementById("sName").value.trim(); if(!name) return false;
+  state.students.push({id:uid(),name,gender:document.getElementById("sGender").value,grade:document.getElementById("sGrade").value.trim()||"未填",className:document.getElementById("sClass").value.trim()||"未填",special:document.getElementById("sSpecial").value});
+  saveState(); render(); toast("学生已添加"); return false;
+}
+function batchAddStudents(){
+  const raw=document.getElementById("batchStudents").value.trim(); if(!raw) return toast("请粘贴名单");
+  const lines=raw.split(/\n/).map(l=>l.trim()).filter(Boolean); let n=0;
+  lines.forEach(line=>{
+    const parts=line.split(/[,，\t]/).map(x=>x.trim());
+    if(!parts[0]) return;
+    state.students.push({id:uid(),name:parts[0],gender:parts[1]||"未填",grade:parts[2]||"未填",className:parts[3]||"未填",special:parts[4]||"无"});
+    n++;
+  });
+  saveState(); render(); toast(`已导入 ${n} 人`);
+}
+function addFitness(e){
+  e.preventDefault();
+  const studentId=document.getElementById("fStudent").value; if(!studentId) return toast("请先添加学生");
+  const h=numOrNull(document.getElementById("fHeight").value); const w=numOrNull(document.getElementById("fWeight").value);
+  if(h!==null && (h<100||h>220)) toast("身高数值异常，请核对");
+  if(w!==null && (w<20||w>200)) toast("体重数值异常，请核对");
+  const bmi=h&&w?+(w/Math.pow(h/100,2)).toFixed(1):null;
+  state.fitnessRecords.push({id:uid(),studentId,year:document.getElementById("fYear").value.trim()||String(new Date().getFullYear()),height:h,weight:w,bmi,vital:numOrNull(document.getElementById("fVital").value),sprint50:numOrNull(document.getElementById("fSprint").value),sitReach:numOrNull(document.getElementById("fSitReach").value),longJump:numOrNull(document.getElementById("fLongJump").value),sitUp:numOrNull(document.getElementById("fSitUp").value),pullUp:numOrNull(document.getElementById("fPullUp").value),endurance:document.getElementById("fEndurance").value.trim()});
+  saveState(); render(); toast("测试记录已保存"); return false;
+}
+function printBlankSheet(){
+  const rows=state.students.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.gender)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`).join("");
+  const html=`<h2>体质测试现场记录表</h2><p>班级：________  测试日期：________  测试教师：________</p>
+  <table border="1" cellspacing="0" cellpadding="4"><tr><th>姓名</th><th>性别</th><th>身高</th><th>体重</th><th>肺活量</th><th>50米</th><th>坐位体前屈</th><th>立定跳远</th><th>仰卧/引体</th><th>耐力</th></tr>${rows}</table>
+  <p style="font-size:11px">说明：本表用于现场手写记录，录入程序后导出上报模板。特异体质/免测学生请在姓名旁标注。</p>`;
+  const w=window.open("","_blank"); w.document.write(`<html><head><title>现场记录表</title><style>body{font-family:"Microsoft YaHei";padding:14px;font-size:12px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #444;padding:4px;text-align:center}</style></head><body>${html}</body></html>`); w.document.close(); w.focus(); w.print();
+}
+function exportFitnessReportCSV(){
+  const rows=[["学籍号","姓名","性别","年级班级","学年","身高(cm)","体重(kg)","BMI","肺活量(ml)","50米(秒)","坐位体前屈(cm)","立定跳远(cm)","仰卧起坐(个)","引体向上(个)","800/1000米","等级(手填)"]];
+  state.fitnessRecords.forEach(r=>{
+    const s=state.students.find(x=>x.id===r.studentId);
+    rows.push(["",s?s.name:"",s?s.gender:"",s?`${s.grade}${s.className}`:"",r.year,r.height,r.weight,r.bmi,r.vital,r.sprint50,r.sitReach,r.longJump,r.sitUp,r.pullUp,r.endurance,""]);
+  });
+  download("体质测试上报模板.csv",csvText(rows),"text/csv;charset=utf-8");
+}
+function exportFitnessCSV(){
+  const rows=[["学生","性别","年级","班级","学年","身高cm","体重kg","BMI","肺活量ml","50米秒","坐位体前屈cm","立定跳远cm","仰卧起坐个","引体向上个","800/1000米"]];
+  state.fitnessRecords.forEach(r=>{ const s=state.students.find(x=>x.id===r.studentId); rows.push([s?s.name:"已删除",s?s.gender:"",s?s.grade:"",s?s.className:"",r.year,r.height,r.weight,r.bmi,r.vital,r.sprint50,r.sitReach,r.longJump,r.sitUp,r.pullUp,r.endurance]); });
+  download("体质测试原始数据.csv",csvText(rows),"text/csv;charset=utf-8");
+}
+
+/* ============================================================
+   10. 训练竞赛
+============================================================ */
+function renderTraining(){
+  return `
+  <div class="card no-print">
+    <h2>训练队 / 竞赛计划</h2>
+    <form onsubmit="return addTraining(event)">
+      <div class="row">
+        <div><label>队名/项目</label><input id="tTeam" required placeholder="如：校田径队"></div>
+        <div><label>周次/日期</label><input type="date" id="tDate" value="${todayISO()}"></div>
+        <div><label>阶段目标</label><input id="tGoal" placeholder="如：发展耐力与接力交接"></div>
+      </div>
+      <div class="row">
+        <div><label>周一</label><textarea id="tMon" rows="2"></textarea></div>
+        <div><label>周二</label><textarea id="tTue" rows="2"></textarea></div>
+        <div><label>周三</label><textarea id="tWed" rows="2"></textarea></div>
+        <div><label>周四</label><textarea id="tThu" rows="2"></textarea></div>
+        <div><label>周五</label><textarea id="tFri" rows="2"></textarea></div>
+        <div><label>周六/日</label><textarea id="tWeekend" rows="2"></textarea></div>
+      </div>
+      <div class="actions"><button>保存训练计划</button></div>
+    </form>
+  </div>
+  <div class="card"><h2>已保存训练计划</h2>${savedPlansHtml("trainingPlans")}</div>`;
+}
+function addTraining(e){
+  e.preventDefault();
+  const team=document.getElementById("tTeam").value.trim(); if(!team) return false;
+  const date=document.getElementById("tDate").value||todayISO();
+  const goal=document.getElementById("tGoal").value.trim()||"按计划循序渐进";
+  const days=[["周一","tMon"],["周二","tTue"],["周三","tWed"],["周四","tThu"],["周五","tFri"],["周六/日","tWeekend"]].map(([l,id])=>`${l}：${document.getElementById(id).value.trim()||"恢复/自主练习"}`).join("\n");
+  const content=`【训练计划】
+队名/项目：${team}
+周次/日期：${date}
+阶段目标：${goal}
+${days}
+
+安全与负荷：训练前检查场地器材、询问身体情况；以动作质量优先，逐步增加负荷；比赛前安排减量；做好饮水与高温/扬尘预案；特异体质学生单独安排。
+留痕：训练结束后在“工作量”中记录“课余训练”时长。`;
+  state.trainingPlans.push({id:uid(),title:`${team} ${date} 训练计划`,created:new Date().toLocaleString("zh-CN"),content});
+  saveState(); render(); toast("训练计划已保存"); return false;
+}
+
+/* ============================================================
+   11. 观摩
+============================================================ */
+function renderObserve(){
+  const catNames={national:"国家级平台",province:"省级教研/送教",rural:"乡村专递/复式",cross:"跨学科/乡土"};
+  const notes=state.observations.slice().reverse();
+  const noteRows=notes.map(n=>`
+    <tr>
+      <td>${esc(n.date)}</td><td>${esc(n.resourceTitle||"自定义")}</td><td>${esc(n.strategy)}</td><td>${esc(n.useIn)}</td>
+      <td><button class="danger" style="padding:3px 6px;font-size:11px" onclick="delWithUndo('observations','${n.id}')">删</button></td>
+    </tr>`).join("");
+  const libHtml=Object.entries(catNames).map(([cat,label])=>{
+    const items=obsLibrary.filter(o=>o.cat===cat);
+    return `<h3>${label}（${items.length}）</h3>`+items.map(o=>`
+      <div class="obs-item">
+        <h4>${esc(o.title)}</h4>
+        <div class="meta"><span class="pill ${o.cat}">${label}</span> ${esc(o.source)} · ${esc(o.level)}</div>
+        <div>${esc(o.note)}</div>
+        <div class="adapt"><strong>乡村适配提示：</strong>${esc(o.adapt)}</div>
+        ${o.url?`<div class="actions"><a href="${esc(o.url)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:var(--green)">打开资源链接 →</a><button class="secondary" style="padding:4px 8px;font-size:11px" onclick="quickNote('${o.id}')">记观摩笔记</button></div>`:`<div class="actions"><button class="secondary" style="padding:4px 8px;font-size:11px" onclick="quickNote('${o.id}')">记观摩笔记</button><span class="small">此条为思路参考，可在全网搜索标题进一步查找。</span></div>`}
+      </div>`).join("");
+  }).join("");
+  return `
+  <div class="card">
+    <h2>观摩各地优秀体育课程</h2>
+    <p class="small">资源按“国家级→省级→乡村专递→跨学科”分层，优先收录对乡村学校器材、场地、班额条件有参考价值的课例。每条都附乡村适配提示，看完建议立即记一条“可迁移策略”。</p>
+    <div class="filter-bar no-print">
+      <input id="obsSearch" placeholder="搜索标题、来源、主题" oninput="filterObs()">
+      <select id="obsCat" onchange="filterObs()">
+        <option value="">全部分类</option>
+        <option value="national">国家级平台</option>
+        <option value="province">省级教研/送教</option>
+        <option value="rural">乡村专递/复式</option>
+        <option value="cross">跨学科/乡土</option>
+      </select>
+    </div>
+  </div>
+  <div id="obsLibrary">${libHtml}</div>
+
+  <div class="card no-print">
+    <h2>观摩笔记 / 可迁移策略</h2>
+    <form onsubmit="return addObservation(event)">
+      <div class="row">
+        <div><label>日期</label><input type="date" id="oDate" value="${todayISO()}"></div>
+        <div><label>关联资源</label><input id="oTitle" placeholder="如：负重前行悟长征"></div>
+        <div><label>打算用在哪里</label><input id="oUse" placeholder="如：五年级耐久跑、大课间"></div>
+      </div>
+      <div><label>我看到的可迁移策略（具体做法）</label><textarea id="oStrategy" rows="2" placeholder="如：用书包作负重物，按能力分A/B两层，每层不同负重和圈数"></textarea></div>
+      <div><label>备注/疑问</label><textarea id="oNote" rows="1"></textarea></div>
+      <div class="actions"><button>保存笔记</button></div>
+    </form>
+  </div>
+  <div class="card">
+    <h2>已保存观摩笔记（${state.observations.length}）</h2>
+    ${notes.length?`<table><tr><th>日期</th><th>资源</th><th>可迁移策略</th><th>用在哪里</th><th></th></tr>${noteRows}</table>`:`<p class="empty">还没有笔记。看课时记一条具体做法，比收藏十个链接更有用。</p>`}
+  </div>`;
+}
+function filterObs(){
+  const q=(document.getElementById("obsSearch").value||"").toLowerCase();
+  const cat=document.getElementById("obsCat").value;
+  document.querySelectorAll("#obsLibrary .obs-item").forEach(el=>{
+    const text=el.textContent.toLowerCase();
+    const show=(!q||text.includes(q)) && (!cat||el.querySelector(".pill")?.classList.contains(cat));
+    el.style.display=show?"":"none";
+  });
+}
+function quickNote(id){
+  const o=obsLibrary.find(x=>x.id===id); if(!o) return;
+  document.getElementById("oTitle").value=o.title;
+  document.getElementById("oStrategy").focus();
+  document.getElementById("oStrategy").scrollIntoView({behavior:"smooth",block:"center"});
+}
+function addObservation(e){
+  e.preventDefault();
+  const strategy=document.getElementById("oStrategy").value.trim(); if(!strategy) return toast("请写一条具体可迁移策略");
+  state.observations.push({id:uid(),date:document.getElementById("oDate").value||todayISO(),resourceTitle:document.getElementById("oTitle").value.trim()||"自定义",strategy,useIn:document.getElementById("oUse").value.trim(),note:document.getElementById("oNote").value.trim()});
+  saveState(); render(); toast("观摩笔记已保存"); return false;
+}
+
+/* ============================================================
+   12. 安全 / 器材
+============================================================ */
+const safetyItems=["场地平整，无石块、坑洼、湿滑","器材牢固，无破损尖锐物","学生鞋带、口袋硬物已检查","询问身体不适/病史，特异体质学生已安排见习","明确活动边界与对抗规则","准备简易急救包","特殊天气预案（高温/雨/扬尘）","低年级/复式班设置小组安全员","发生伤害后的报告与联系流程明确"];
+function renderSafety(){
+  const saved=state.safetyChecks.slice().reverse().map(c=>`
+    <details><summary>${esc(c.date)} 安全检查（${c.checked.length}项）</summary><pre>${esc(c.content)}</pre>
+    <button class="danger" style="padding:3px 6px;font-size:11px" onclick="delWithUndo('safetyChecks','${c.id}')">删除</button></details>`).join("");
+  const eqRows=state.equipment.map(e=>`<tr><td>${esc(e.name)}</td><td>${esc(e.qty)}</td><td>${esc(e.status||"正常")}</td><td>${esc(e.note||"")}</td><td><button class="danger" style="padding:3px 6px;font-size:11px" onclick="delWithUndo('equipment','${e.id}')">删</button></td></tr>`).join("");
+  const logRows=state.equipmentLogs.slice().reverse().map(l=>`<tr><td>${esc(l.date)}</td><td>${esc(l.item)}</td><td>${esc(l.action)}</td><td>${esc(l.person||"")}</td><td>${esc(l.note||"")}</td><td><button class="danger" style="padding:3px 6px;font-size:11px" onclick="delWithUndo('equipmentLogs','${l.id}')">删</button></td></tr>`).join("");
+  return `
+  <div class="card">
+    <h2>课前安全检查清单</h2>
+    <div id="safetyChecks">${safetyItems.map(x=>`<label class="check"><input type="checkbox" value="${esc(x)}"> ${esc(x)}</label>`).join("")}</div>
+    <div class="actions"><button onclick="saveSafetyCheck()">保存本次检查</button></div>
+  </div>
+  <div class="card">
+    <h2>器材台账</h2>
+    <form onsubmit="return addEquipment(event)">
+      <div class="row">
+        <div><label>器材名称</label><input id="eqName" required placeholder="如：短绳"></div>
+        <div><label>数量</label><input type="number" id="eqQty" value="1" min="0"></div>
+        <div><label>状态</label><select id="eqStatus"><option>正常</option><option>破损</option><option>报废</option><option>外借</option></select></div>
+        <div><label>备注</label><input id="eqNote" placeholder="存放位置/购置年份"></div>
+      </div>
+      <div class="actions"><button>添加器材</button></div>
+    </form>
+    ${state.equipment.length?`<table><tr><th>器材</th><th>数量</th><th>状态</th><th>备注</th><th></th></tr>${eqRows}</table>`:`<p class="empty">暂无器材记录。</p>`}
+  </div>
+  <div class="card">
+    <h2>借还/损耗记录</h2>
+    <form onsubmit="return addEquipmentLog(event)">
+      <div class="row">
+        <div><label>日期</label><input type="date" id="elDate" value="${todayISO()}"></div>
+        <div><label>器材</label><input id="elItem" required placeholder="如：短绳"></div>
+        <div><label>操作</label><select id="elAction"><option>借出</option><option>归还</option><option>损耗</option><option>补充</option></select></div>
+        <div><label>经手人/班级</label><input id="elPerson" placeholder="如：七年级1班"></div>
+        <div><label>备注</label><input id="elNote"></div>
+      </div>
+      <div class="actions"><button>添加记录</button></div>
+    </form>
+    ${state.equipmentLogs.length?`<table><tr><th>日期</th><th>器材</th><th>操作</th><th>经手</th><th>备注</th><th></th></tr>${logRows}</table>`:`<p class="empty">暂无借还记录。</p>`}
+  </div>
+  <div class="card">
+    <h2>器材替代策略库</h2>
+    <table>
+      <tr><th>缺少的器材</th><th>可行替代/组织方式</th></tr>
+      <tr><td>球类不足</td><td>分组轮换、循环站；纸球/废旧布球/矿泉水瓶作标志物；减少一人一球要求。</td></tr>
+      <tr><td>标志盘不足</td><td>粉笔画线、书包、水瓶；石块需确保无尖锐边角且不投掷。</td></tr>
+      <tr><td>短绳不足</td><td>两人一组轮换；长绳用牢固麻绳并课前试拉；无绳做徒手摇绳模仿。</td></tr>
+      <tr><td>秒表不足</td><td>手机计时；小组长计数；固定距离折返跑替代精确计时。</td></tr>
+      <tr><td>哨子不足</td><td>口令、手势、小组长传递信号；提前约定轮换信号。</td></tr>
+      <tr><td>栏架/障碍不足</td><td>粉笔画线、低矮安全障碍；以跨步走、绕障碍代替高风险跨越。</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h2>安全预案模板</h2>
+    <pre>1. 课前：检查场地器材，询问病史，安排见习生，明确活动边界，确认特异体质学生。
+2. 课中：讲解安全规则，控制对抗强度，教师定点巡回，小组安全员提醒。
+3. 伤害处理：立即停止活动→判断意识呼吸→简单止血/固定→报告学校并联系家长/急救。
+4. 事后：记录时间、地点、经过、处理措施和报告对象；配合学校复盘。
+5. 特殊天气：高温减少跑跳并补水；雨天转室内低强度；扬尘天降低跑量或转室内。</pre>
+  </div>
+  <div class="card"><h2>已保存安全检查</h2>${saved||`<p class="empty">暂无记录。</p>`}</div>`;
+}
+function saveSafetyCheck(){
+  const checked=[...document.querySelectorAll("#safetyChecks input:checked")].map(x=>x.value);
+  if(!checked.length) return toast("请至少勾选一项");
+  const date=todayISO();
+  state.safetyChecks.push({id:uid(),date,checked,content:`安全检查 ${date}\n已检查：\n- ${checked.join("\n- ")}`});
+  saveState(); render(); toast("安全检查已保存");
+}
+function addEquipment(e){
+  e.preventDefault();
+  const name=document.getElementById("eqName").value.trim(); if(!name) return false;
+  state.equipment.push({id:uid(),name,qty:Number(document.getElementById("eqQty").value)||0,status:document.getElementById("eqStatus").value,note:document.getElementById("eqNote").value.trim()});
+  saveState(); render(); toast("器材已添加"); return false;
+}
+function addEquipmentLog(e){
+  e.preventDefault();
+  const item=document.getElementById("elItem").value.trim(); if(!item) return false;
+  state.equipmentLogs.push({id:uid(),date:document.getElementById("elDate").value||todayISO(),item,action:document.getElementById("elAction").value,person:document.getElementById("elPerson").value.trim(),note:document.getElementById("elNote").value.trim()});
+  saveState(); render(); toast("借还记录已添加"); return false;
+}
+
+/* ============================================================
+   13. 工作量
+============================================================ */
+function renderWorkload(){
+  const mk=monthKey();
+  const cur=state.workload.filter(w=>w.date&&w.date.startsWith(mk));
+  const byType={}; cur.forEach(w=>{byType[w.type]=(byType[w.type]||0)+(Number(w.minutes)||0);});
+  const summary=Object.entries(byType).map(([k,v])=>`<div class="stat"><div class="small">${esc(k)}</div><strong>${v}</strong><div class="small">分钟</div></div>`).join("")||`<p class="empty">本月暂无记录。</p>`;
+  const rows=state.workload.slice().reverse().map(w=>`<tr><td>${esc(w.date)}</td><td>${esc(w.type)}</td><td>${esc(w.minutes)}</td><td>${esc(w.note)}</td><td><button class="danger" style="padding:3px 6px;font-size:11px" onclick="delWithUndo('workload','${w.id}')">删</button></td></tr>`).join("");
+  const ttRows=state.weeklyTimetable.map(t=>`<tr><td>${esc(t.day)}</td><td>${esc(t.period)}</td><td>${esc(t.className)}</td><td>${esc(t.type)}</td><td>${esc(t.minutes)}</td><td><button class="danger" style="padding:3px 6px;font-size:11px" onclick="delWithUndo('weeklyTimetable','${t.id}')">删</button></td></tr>`).join("");
+  return `
+  <div class="card">
+    <h2>周课表（用于一键生成工作量）</h2>
+    <p class="small">录入你的固定周课表，一键生成本周工作量，再手动补大课间、训练、走教交通等。</p>
+    <form onsubmit="return addTimetable(event)">
+      <div class="row">
+        <div><label>星期</label><select id="ttDay"><option>周一</option><option>周二</option><option>周三</option><option>周四</option><option>周五</option></select></div>
+        <div><label>节次</label><input id="ttPeriod" placeholder="如：第3节"></div>
+        <div><label>班级</label><input id="ttClass" placeholder="如：七年级1班"></div>
+        <div><label>类型</label><select id="ttType"><option>体育课</option><option>大课间</option><option>课外活动/课后服务</option><option>课余训练</option><option>走教交通</option></select></div>
+        <div><label>分钟</label><input type="number" id="ttMinutes" value="40" min="1"></div>
+      </div>
+      <div class="actions"><button>添加课表项</button><button type="button" class="secondary" onclick="generateWorkloadFromTimetable()">一键生成本周工作量</button></div>
+    </form>
+    ${state.weeklyTimetable.length?`<table><tr><th>星期</th><th>节次</th><th>班级</th><th>类型</th><th>分钟</th><th></th></tr>${ttRows}</table>`:`<p class="empty">暂无周课表。</p>`}
+  </div>
+  <div class="card">
+    <h2>手动补录</h2>
+    <form onsubmit="return addWorkload(event)">
+      <div class="row">
+        <div><label>日期</label><input type="date" id="wDate" value="${todayISO()}"></div>
+        <div><label>类型</label><select id="wType"><option>体育课</option><option>大课间</option><option>课外活动/课后服务</option><option>课余训练</option><option>体质测试</option><option>走教交通</option><option>教研/培训</option><option>观摩学习</option><option>其他</option></select></div>
+        <div><label>时长（分钟）</label><input type="number" id="wMinutes" value="40" min="1"></div>
+        <div><label>备注</label><input id="wNote" placeholder="如：七年级1班、跳绳单元"></div>
+      </div>
+      <div class="actions"><button>添加记录</button><button type="button" class="secondary" onclick="exportWorkloadCSV()">导出CSV</button></div>
+    </form>
+  </div>
+  <div class="card"><h2>本月汇总</h2><div class="grid">${summary}</div></div>
+  <div class="card"><h2>全部记录</h2>${state.workload.length?`<table><tr><th>日期</th><th>类型</th><th>分钟</th><th>备注</th><th></th></tr>${rows}</table>`:`<p class="empty">暂无记录。</p>`}</div>`;
+}
+function addTimetable(e){
+  e.preventDefault();
+  state.weeklyTimetable.push({id:uid(),day:document.getElementById("ttDay").value,period:document.getElementById("ttPeriod").value.trim(),className:document.getElementById("ttClass").value.trim(),type:document.getElementById("ttType").value,minutes:Number(document.getElementById("ttMinutes").value)||40});
+  saveState(); render(); toast("课表项已添加"); return false;
+}
+function generateWorkloadFromTimetable(){
+  if(!state.weeklyTimetable.length) return toast("请先添加周课表");
+  const ws=startOfWeek();
+  const dayMap={"周一":0,"周二":1,"周三":2,"周四":3,"周五":4};
+  let n=0;
+  state.weeklyTimetable.forEach(t=>{
+    const d=new Date(ws); d.setDate(ws.getDate()+(dayMap[t.day]??0));
+    const iso=d.toISOString().slice(0,10);
+    if(state.workload.some(w=>w.date===iso && w.type===t.type && w.note===`${t.className} ${t.period}`.trim())) return;
+    state.workload.push({id:uid(),date:iso,type:t.type,minutes:t.minutes,note:`${t.className} ${t.period}`.trim()}); n++;
+  });
+  saveState(); render(); toast(`已生成本周 ${n} 条工作量记录`);
+}
+function addWorkload(e){
+  e.preventDefault();
+  state.workload.push({id:uid(),date:document.getElementById("wDate").value||todayISO(),type:document.getElementById("wType").value,minutes:Number(document.getElementById("wMinutes").value)||0,note:document.getElementById("wNote").value.trim()});
+  saveState(); render(); toast("工作量已记录"); return false;
+}
+function exportWorkloadCSV(){
+  const rows=[["日期","类型","分钟","备注"]];
+  state.workload.forEach(w=>rows.push([w.date,w.type,w.minutes,w.note]));
+  download("工作量记录.csv",csvText(rows),"text/csv;charset=utf-8");
+}
+
+/* ============================================================
+   14. 专业成长
+============================================================ */
+function renderGrowth(){
+  const rows=state.growth.slice().reverse().map(g=>`<tr><td>${esc(g.date)}</td><td>${esc(g.type)}</td><td>${esc(g.title)}</td><td>${esc(g.note)}</td><td>${esc(g.evidence)}</td><td><button class="danger" style="padding:3px 6px;font-size:11px" onclick="delWithUndo('growth','${g.id}')">删</button></td></tr>`).join("");
+  return `
+  <div class="card">
+    <h2>专业成长记录</h2>
+    <form onsubmit="return addGrowth(event)">
+      <div class="row">
+        <div><label>日期</label><input type="date" id="gDate" value="${todayISO()}"></div>
+        <div><label>类型</label><select id="gType"><option>培训</option><option>公开课</option><option>教学反思</option><option>观摩学习</option><option>获奖</option><option>课题</option><option>其他</option></select></div>
+        <div><label>标题</label><input id="gTitle" required></div>
+        <div><label>佐证材料</label><input id="gEvidence" placeholder="如：证书、通知、签到表"></div>
+      </div>
+      <div><label>内容/反思</label><textarea id="gNote" rows="2"></textarea></div>
+      <div class="actions"><button>添加记录</button></div>
+    </form>
+  </div>
+  <div class="card"><h2>全部记录</h2>${state.growth.length?`<table><tr><th>日期</th><th>类型</th><th>标题</th><th>内容</th><th>佐证</th><th></th></tr>${rows}</table>`:`<p class="empty">暂无记录。</p>`}</div>`;
+}
+function addGrowth(e){
+  e.preventDefault();
+  const title=document.getElementById("gTitle").value.trim(); if(!title) return false;
+  state.growth.push({id:uid(),date:document.getElementById("gDate").value||todayISO(),type:document.getElementById("gType").value,title,note:document.getElementById("gNote").value.trim(),evidence:document.getElementById("gEvidence").value.trim()});
+  saveState(); render(); toast("成长记录已添加"); return false;
+}
+
+/* ============================================================
+   15. 说明 / README
+============================================================ */
+function renderAbout(){
+  return `
+  <div class="card">
+    <h2>项目说明 / README</h2>
+    <p class="small">v${VERSION} · 单文件 · 离线 · 数据本机 · 面向乡村中小学体育教师</p>
+  </div>
+
+  <div class="card readme">
+    <h2>一、项目解决什么问题</h2>
+    <p>乡村体育教师通常同时承担体育课、大课间、课余训练、体质测试上报、器材管理，部分还要兼任其他学科或走教。日常工作的真实困难集中在：</p>
+    <ul>
+      <li><strong>任务多而散：</strong>开学要交学期进度表，测试季要交数据，期末要交成绩和总结，平时还要教案、大课间方案、安全记录。</li>
+      <li><strong>条件受限：</strong>器材不足、场地简陋、复式班或大班额，城市学校的现成方案常常直接套不上。</li>
+      <li><strong>安全压力大：</strong>需要可执行的检查清单、预案和特异体质提醒，出了事也要有履职留痕。</li>
+      <li><strong>观摩资源分散：</strong>国家平台、省级教研、乡村专递、跨学科案例散落各处，看完就忘，难沉淀成自己的做法。</li>
+      <li><strong>职称佐证难积累：</strong>大课间、训练、测试、走教交通等工作量，平时不记，评优评先时说不清。</li>
+      <li><strong>网络和设备不确定：</strong>乡村学校网络不稳、电脑少，在线工具常常打不开或要登录。</li>
+    </ul>
+    <p>本项目是一个<strong>单文件、离线可用、手机可打开</strong>的乡村体育教师工作台，把上述高频任务收进一个页面：能生成的直接生成，能打印的直接打印，能导出CSV的直接导出，能留痕的自动留痕。</p>
+  </div>
+
+  <div class="card readme">
+    <h2>二、主要功能</h2>
+    <table>
+      <tr><th>模块</th><th>主要功能</th><th>对应工作/难点</th></tr>
+      <tr><td>工作台</td><td>本周概览、待办清单、备份提醒、特异体质全局提醒</td><td>精力分散、数据安全</td></tr>
+      <tr><td>教案/进度</td><td>单课时教案生成、18课时大单元框架、学期教学进度表生成与导出</td><td>开学硬任务、专业能力瓶颈</td></tr>
+      <tr><td>大课间</td><td>15—45分钟流程生成、复式/大班额分区组织、器材替代</td><td>每天一小时、器材不足</td></tr>
+      <tr><td>体质测试</td><td>名单批量导入、成绩录入、BMI计算、现场记录表打印、上报模板CSV、原始数据CSV</td><td>测试季刚性任务</td></tr>
+      <tr><td>训练竞赛</td><td>周训练计划模板、阶段目标、安全与负荷提示、保存留痕</td><td>课余训练与带队比赛</td></tr>
+      <tr><td>观摩</td><td>国家级/省级/乡村专递/跨学科四层资源库、乡村适配提示、观摩笔记沉淀</td><td>专业成长、资源分散</td></tr>
+      <tr><td>安全/器材</td><td>课前检查清单、器材台账、借还损耗记录、替代策略库、预案模板</td><td>安全压力、器材管理</td></tr>
+      <tr><td>工作量</td><td>周课表一键生成本周工作量、手动补录、月度汇总、CSV导出</td><td>职称佐证、绩效核算</td></tr>
+      <tr><td>专业成长</td><td>培训、公开课、教学反思、观摩学习、获奖、课题记录</td><td>职称材料积累</td></tr>
+      <tr><td>数据管理</td><td>JSON导出/导入、删除10秒撤销、旧版数据自动迁移</td><td>数据安全与可迁移</td></tr>
+    </table>
+  </div>
+
+  <div class="card readme">
+    <h2>三、安装方法</h2>
+    <ol style="font-size:13px;padding-left:20px">
+      <li>复制本文件全部代码，保存为 <code>乡村体育教师工作台.html</code>（编码选 UTF-8）。</li>
+      <li><strong>电脑：</strong>双击文件，用 Chrome、Edge、360 等浏览器打开即可，无需安装、无需联网、无需账号。</li>
+      <li><strong>手机：</strong>把文件发到微信“文件传输助手”→ 手机上点开 → 选择“用浏览器打开”；或在浏览器菜单中选择“添加到主屏幕”，以后像 App 一样打开。</li>
+      <li><strong>更新程序：</strong>用新文件替换旧文件即可；首次打开会自动把旧版 <code>v1</code> 数据迁移到 <code>v2</code>，不会丢失。</li>
+      <li><strong>数据位置：</strong>所有数据保存在当前浏览器的 localStorage（键名 <code>rural_pe_teacher_workbench_v2</code>），不上传任何服务器。</li>
+    </ol>
+  </div>
+
+  <div class="card readme">
+    <h2>四、使用方法（推荐顺序）</h2>
+    <ol style="font-size:13px;padding-left:20px">
+      <li><strong>首次使用：</strong>进入“体质测试”→ 用“批量导入名单”粘贴全班名单（格式：姓名,性别,年级,班级,特异体质），特异体质学生会自动在页面顶部提醒。</li>
+      <li><strong>录周课表：</strong>进入“工作量”→ 添加周课表项 → 以后每周点“一键生成本周工作量”。</li>
+      <li><strong>开学：</strong>进入“教案/进度”→ 生成学期教学进度表，打印或导出CSV交给教研组。</li>
+      <li><strong>日常备课：</strong>“教案/进度”→ 选年级、场地、器材、主教材、天气 → 生成教案 → 打印或保存。</li>
+      <li><strong>每天大课间：</strong>“大课间”→ 选主题和时长 → 生成方案 → 打印张贴或保存。</li>
+      <li><strong>测试季：</strong>“体质测试”→ 打印现场记录表 → 排队测试手写 → 回办公室录入 → 导出上报模板CSV。</li>
+      <li><strong>观摩学习：</strong>“观摩”→ 按分类或关键词筛选 → 打开资源链接 → 看完点“记观摩笔记”，写下一条具体可迁移策略。</li>
+      <li><strong>月末/期末：</strong>“工作量”→ 导出CSV；“工作台”→ 导出备份JSON；清理浏览器或换设备前务必先备份。</li>
+    </ol>
+  </div>
+
+  <div class="card readme">
+    <h2>五、输入输出示例</h2>
+
+    <h3>示例1：生成一节教案</h3>
+    <p><strong>输入</strong>（在“教案/进度”表单中选择）：</p>
+    <pre>年级：7年级    班级：1班    人数：40
+场地：土操场/硬化地
+器材：短绳20根、标志盘6个
+主教材：跳绳
+天气/条件：正常
+复式班/大班额：勾选</pre>
+    <p><strong>输出</strong>（生成文本节选）：</p>
+    <pre>【单课时教案】
+年级/班级：7年级1班
+人数：40    场地：土操场/硬化地    器材：短绳20根、标志盘6个
+主教材：跳绳    天气/条件：正常
+学习目标：
+运动能力：80%以上学生能完成并脚跳、单脚交换跳与摇绳节奏；……
+
+二、基本部分（28分钟）
+1. 讲解示范（5分钟）：摇绳以腕为轴、前脚掌轻落地……
+2. 分层练习（12分钟）：A组（基础）完成分解动作；B组（提高）完成组合动作……
+3. 组合/简化比赛（8分钟）：30秒计数挑战、长绳“鱼贯而入”……
+4. 体能补偿（3分钟）：平板支撑20秒×2组、原地高抬腿20秒×2组
+
+复式班/大班额组织：A组（低年级/基础）做分解模仿和小组计数，B组（高年级/提高）
+做组合练习并担任安全员；每6—8分钟轮换，教师定点巡回，小组长持任务卡。</pre>
+
+    <h3>示例2：批量导入学生名单</h3>
+    <p><strong>输入</strong>（一行一个，逗号或制表符分隔）：</p>
+    <pre>张三,男,7年级,1班,无
+李四,女,7年级,1班,哮喘
+王五,男,7年级,1班,无</pre>
+    <p><strong>输出：</strong>学生名单新增3条；页面顶部出现提醒“特异体质/免测提醒：李四（哮喘）”。</p>
+
+    <h3>示例3：体质测试录入与上报</h3>
+    <p><strong>输入：</strong>学生张三，身高165cm，体重55kg，肺活量2800ml，50米8.2秒，坐位体前屈12.5cm，立定跳远190cm，仰卧起坐35个，800米4分20秒。</p>
+    <p><strong>输出：</strong>记录保存，BMI自动计算为 20.2；点击“导出上报模板CSV”得到：</p>
+    <pre>学籍号,姓名,性别,年级班级,学年,身高(cm),体重(kg),BMI,肺活量(ml),50米(秒),坐位体前屈(cm),立定跳远(cm),仰卧起坐(个),引体向上(个),800/1000米,等级(手填)
+,张三,男,7年级1班,2026,165,55,20.2,2800,8.2,12.5,190,35,,4分20秒,</pre>
+
+    <h3>示例4：工作量一键生成</h3>
+    <p><strong>输入</strong>（周课表）：周一 第3节 七年级1班 体育课 40分钟</p>
+    <p><strong>输出</strong>（本周工作量记录）：</p>
+    <pre>日期           类型     分钟   备注
+2026-10-26    体育课   40     七年级1班 第3节</pre>
+    <p>“本月汇总”按类型累计分钟数，可导出 <code>工作量记录.csv</code> 用于绩效核算或职称材料。</p>
+
+    <h3>示例5：观摩笔记</h3>
+    <p><strong>输入：</strong>关联资源“负重前行悟长征”；可迁移策略“用书包作负重物，按能力分A/B两层，每层不同负重和圈数”；打算用在哪里“五年级耐久跑”。</p>
+    <p><strong>输出：</strong>观摩笔记表格新增一行，可在“专业成长”中作为“观摩学习”佐证。</p>
+  </div>
+
+  <div class="card readme">
+    <h2>六、数据与隐私说明</h2>
+    <ul>
+      <li>所有数据仅保存在本机浏览器 localStorage，<strong>不上传任何服务器</strong>，无需登录。</li>
+      <li>导出的 JSON/CSV 含学生姓名与身体数据，请勿随意发群、上传公共网盘或发给无关人员。</li>
+      <li>清理浏览器数据、使用无痕模式、换设备前，<strong>务必先导出备份JSON</strong>；程序在工作台会在超过7天未备份时提醒。</li>
+      <li>删除记录后10秒内可点“撤销删除”恢复。</li>
+      <li><strong>共用设备提醒：</strong>页面顶部会显示特异体质学生姓名，办公室共用电脑或教室大屏投屏时请注意屏幕隐私；演示或截图对外时，建议先清空或使用化名数据。</li>
+      <li><strong>外链说明：</strong>观摩资源信息来自公开教研报道与平台介绍，仅用于教学参考；部分链接可能随时间失效，第三方站点可能含广告或付费内容，请甄别使用。程序本身不发起任何网络请求，外链仅在用户主动点击时打开。</li>
+      <li>旧版数据键名 <code>rural_pe_teacher_workbench_v1</code>，新版为 <code>rural_pe_teacher_workbench_v2</code>，首次打开自动迁移。</li>
+    </ul>
+  </div>`;
+}
+
+/* ============================================================
+   16. 数据导入导出
+============================================================ */
+function exportJSON(){
+  state.meta.lastBackupAt=todayISO();
+  download("乡村体育教师工作台备份_v2.json",JSON.stringify(state,null,2),"application/json;charset=utf-8");
+  saveState(); updateStatus(); toast("备份已导出");
+}
+function importJSON(event){
+  const file=event.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const parsed=JSON.parse(reader.result);
+      if(!confirm("导入将覆盖当前数据，确定继续？")) return;
+      state=normalize(parsed); saveState(); render(); toast("导入成功");
+    }catch(e){ alert("导入失败：不是有效的JSON备份。"); }
+    finally{ event.target.value=""; }
+  };
+  reader.readAsText(file,"utf-8");
+}
+function resetAll(){
+  if(!confirm("确定清空全部数据？建议先导出备份。")) return;
+  if(!confirm("再次确认：清空后无法恢复。")) return;
+  state=JSON.parse(JSON.stringify(defaultState)); saveState(); render(); toast("已清空");
+}
+
+/* ============================================================
+   17. 启动
+============================================================ */
+render();
+if (state.meta.migratedFromV1) {
+  setTimeout(()=>toast("已从旧版迁移数据，建议导出一次备份"),800);
+}
+</script>
+</body>
+</html>
